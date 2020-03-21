@@ -1,0 +1,13 @@
+#Toy StartUp
+-1 To Create Go to the timeLib Directory and make
+-2 go to the toy Directory and make
+-3 plug in given msp430 launchpad with boosterkit attached
+-4 while in the toy directory make load
+-5 msp430 should be running in order to check tap a button on the boosterkit
+
+#Toy Desciption
+     Toy give a way to alter the sound using the Button1 and Button2
+     	 -Button 1 lowers the frequency(by 50)
+	 -Button 2 raises the frequeny(by 50)
+     Button 3 will repeat the same sound
+     Button 4 will play a custom song 

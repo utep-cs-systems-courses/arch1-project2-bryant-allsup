@@ -21,23 +21,32 @@ char toggle_red()		/* always toggle! */
 
 char toggle_green()	/* only toggle green if red is on!  */
 {
-  char changed = 0;
-  if (red_on) {
-    green_on ^= 1;
-    changed = 1;
+  static char state  = 0;
+
+  switch (state){
+  case 0:
+    green_on = 1;
+    state = 1;
+    break;
+  case 1:
+    green_on = 0;
+    state = 0;
+    break;
+      }
+  return 1;
   }
-  return changed;
-}
-
-
+    
+    
 void state_advance()		/* alternate between toggling red & green */
 {
   char changed = 0;  
 
-  static enum {R=0, G=1} color = G;
+  static enum {O=0, W=1, T=2, F=3 } color = W;
   switch (color) {
-  case R: changed = toggle_red(); color = G; break;
-  case G: changed = toggle_green(); color = R; break;
+  case O: changed = toggle_green();toggle_red(); color = W; break;//0 neither
+  case W: changed = toggle_green(); color = T; break;//1 green
+  case T: changed = toggle_red(); toggle_green(); color = F; break; //2 red
+  case F: changed = toggle_green();color =O; break;//3 green and red
   }
 
   led_changed = changed;
