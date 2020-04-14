@@ -3,25 +3,24 @@
 #include "led.h"
 #include "buzzer.h"
 #include "switches.h"
+#include "libTimer.h"
 //#include "assembly.h"
     
-//button1_down,button2_down,button3_down,button4_down,switch_state_changed
 static int sound=1000;//control frequency of the sound
-const int song1[]= {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800,500,500,500,500,600,650,700,750,800,800,400,500,500,700,900,1100,1300,1300,1300,1300};
+static enum{off=0,dim=1,On=2} brightness;
+static char counter =0;
+static char state = 3;
 
 void state_advance()
 {
   if(switch_state_changed){
     
-    button1_down ? state_1():0;// raises frequency of the sound
-    button2_down & sound>1800  ? state_2():0;// lowers frequency of the sound
-    button3_down? state_3():0;// repeats sound
-    button4_down? state_4():0;// plays a small "song"
-    
-    buzzer_set_period(sound);
-    
-    timmer();
-    
+    button1_down ? switch_1():0;// raises frequency of the sound
+    button2_down ? switch_2():0;// lowers frequency of the sound
+    button3_down? switch_3():0;// repeats sound
+    button4_down? switch_4():0;// plays a small "song"
+    buzzer_set_period(sound);    
+    timmer(1);
     led_update();
     buzzer_set_period(0);
 
@@ -29,49 +28,75 @@ void state_advance()
   switch_state_changed=0;
 }
 
-void state_1()
+void switch_1()
 {
-  red_led=0;
-  green_led=1;
-  leds_changed=1;
-  sound +=100;
-  led_update();
+    sound +=100;
+    if(sound == 1800){      
+      state = 5;
+      sound = 1800;}
+    if(sound > 1000 && sound < 1800 ){state = 4;}
+    if (sound==1000){state = 3;}
+  enableWDTInterrupts();
 }
-void state_2()
+void switch_2()
 {
-  red_led=1;
-  green_led=0;
-  leds_changed=1;
-  sound -=100;
-  led_update();
+  if(sound > 500){sound -= 100;}
+  if(sound == 500){state = 1;}
+  if(sound < 1000 && sound > 500){state = 2;}
+  if (sound==1000){state = 3;}
+  enableWDTInterrupts();
 }
-void state_3()
+void switch_3()
 {
-  red_led=1;
-  green_led=1;
-  leds_changed=1;
-  led_update();
+  enableWDTInterrupts();
 }
-void state_4(){
-  int play = 0;
-    while(play<sizeof(song1)) {
-      buzzer_set_period(song1[play]);// song is played at area played
-      if(play%2==0){red_led=1;} //if is a remainder of 2 red light is on
-      else{red_led=0;}
-      if(play%3==0){green_led=1;}//if remainder of 3 green light is on
-      else{green_led=0;}
-      leds_changed=1;
-      led_update();
-      timmer();// causes flashing
-      play++;
-      }
+void switch_4(){
+  sound = 1000;
+  state = 3;
+  enableWDTInterrupts();
 }
 
-void timmer(){
-int time = 0;
-  while(time< 30000)
-    {time++;}
+void next()
+{
+  char temp = 0;
+  leds_changed = 1;
+  switch(state)
+    {
+    case 1:
+      red_led = 0;
+      green_led = 1;
+      break;
+    case 2:
+      red_led = 0;
+      green_led = (counter<1);
+      break;
+    case 3:
+      red_led = 1;
+      green_led = 1;
+      break;
+    case 4:
+      red_led = (counter<1);
+      green_led = 0;
+      break;
+    case 5:
+      red_led = 1;
+      green_led = 0;
+      break;
+    }
+  led_update();
 }
+
+void timmer(int i){
+int time = 0;
+ for (int cycle =0; cycle < i; cycle++)
+   {while(time< 30000) {time++;}}
+}
+
+void bright()
+{brightness = (brightness + 1)%3;}
+
+void count()
+{counter = (counter + 1)%3;}
 
 
 

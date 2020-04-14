@@ -19,4 +19,6 @@ load: toy.elf
 
 clean:
 	rm -f *.o *.elf
+erase:
+	rm -f *~ *#
 
