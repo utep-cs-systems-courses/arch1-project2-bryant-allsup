@@ -6,8 +6,7 @@ void
 __interrupt_vec(WDT_VECTOR) WDT(){	/* 250 interrupts/sec */
   static char time_count = 0;
   if (++time_count == 125)
-    {bright();}
-  count();
+    {bright();}//allows colors to be dimmed
   next();
   
 }

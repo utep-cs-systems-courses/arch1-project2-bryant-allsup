@@ -8,15 +8,20 @@
 #Toy Desciption
      Toy will do different thing depending on the buttons of the boosterkit
      	 -Button 1 lowers the frequency(by 100)
-	 -Button 1 will run the green led
+	 -Button 1 will eventually turn the lights a dim red and then a full red
 	 -Button 2 raises the frequeny(by 100)
-	 -Button 2 will run red led
+	 -Button 2 will eventullt turn the lights green led
    	 -Button 3 will repeat the same sound
-	 -Button 3 will run bothe leds
-	 -Button 4 will play a custom "song"
-	 -Button 4 will dim flash both leds making it look dimmer
+	 -button 3 will keep
+	 -Button 4 will reset to default
+	 -Button 4 will turn on both leds
 
-#Toy Bugs
-     -interrupt does not work during the song
-     -Red Led on switch two is buggy (sometimes works and sometimes doesn't)
-     	  - messing with button 3 and 4 will fix it (kinda)
+#Toy Bug
+     -Dim lights will go completley on and will not go back to dim until
+     	  -you go the opposite direction twice and then intitial direction
+	  once
+	  -you go to both lights on
+     -make with assembly does gives errors because of "#"
+     -commenting out the "next()" causes the program to not recognize variable
+     "sound"
+	-"Sound" is never used in "next()"
